@@ -4,21 +4,23 @@ import { useTheme } from "@/components/theme-provider";
 import { Sidebar } from "@/components/sidebar";
 import { Player } from "@/components/player";
 import { SearchBar } from "@/components/search-bar";
-import { AlbumGrid } from "@/components/album-grid";
+import { AlbumGrid, AlbumCard } from "@/components/album-grid";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedBackground } from "@/components/animated-background";
+import { cn } from "@/lib/utils";
 
 // Mock data for categories
 const categories = [
-  { id: "podcasts", name: "Podcasts", color: "bg-orange-500" },
-  { id: "live-events", name: "Live Events", color: "bg-pink-500" },
-  { id: "made-for-you", name: "Made For You", color: "bg-blue-500" },
-  { id: "new-releases", name: "New Releases", color: "bg-green-500" },
-  { id: "pop", name: "Pop", color: "bg-purple-500" },
-  { id: "hip-hop", name: "Hip-Hop", color: "bg-yellow-500" },
-  { id: "rock", name: "Rock", color: "bg-red-500" },
-  { id: "indie", name: "Indie", color: "bg-indigo-500" },
+  { id: "podcasts", name: "Podcasts", color: "bg-orange-500", imageUrl: "https://images.unsplash.com/photo-1589903308904-1010c2294adc" },
+  { id: "live-events", name: "Live Events", color: "bg-pink-500", imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745" },
+  { id: "made-for-you", name: "Made For You", color: "bg-blue-500", imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f" },
+  { id: "new-releases", name: "New Releases", color: "bg-green-500", imageUrl: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3" },
+  { id: "pop", name: "Pop", color: "bg-purple-500", imageUrl: "https://images.unsplash.com/photo-1496092607007-ca33db8d91ca" },
+  { id: "hip-hop", name: "Hip-Hop", color: "bg-yellow-500", imageUrl: "https://images.unsplash.com/photo-1611329532992-0b7b51df6476" },
+  { id: "rock", name: "Rock", color: "bg-red-500", imageUrl: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee" },
+  { id: "indie", name: "Indie", color: "bg-indigo-500", imageUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4" },
 ];
 
 // Mock search results
@@ -85,7 +87,9 @@ const SearchPage = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'night-background' : 'day-background'}`}>
+    <div className="min-h-screen">
+      <AnimatedBackground />
+      
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
         <div className="flex-shrink-0 p-3">
@@ -95,13 +99,13 @@ const SearchPage = () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="p-4 glass-effect border-b flex items-center justify-between gap-4">
+          <div className="p-4 glass-effect sticky top-0 z-10 flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 flex-1">
               <div className="flex space-x-2">
-                <Button size="icon" variant="outline" className="rounded-full">
+                <Button size="icon" variant="outline" className="rounded-full bg-background/40 backdrop-blur-md">
                   {"<"}
                 </Button>
-                <Button size="icon" variant="outline" className="rounded-full">
+                <Button size="icon" variant="outline" className="rounded-full bg-background/40 backdrop-blur-md">
                   {">"}
                 </Button>
               </div>
@@ -111,19 +115,19 @@ const SearchPage = () => {
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              <Button variant="outline">Sign Up</Button>
-              <Button>Log In</Button>
+              <Button variant="outline" className="bg-background/40 backdrop-blur-md hover:bg-background/60">Sign Up</Button>
+              <Button className="bg-primary/90 backdrop-blur-md hover:bg-primary/100">Log In</Button>
             </div>
           </div>
 
           {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-6 pb-24">
             <h1 className="text-2xl font-bold mb-6">Browse All</h1>
             
             {searchQuery ? (
               // Search results
               <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="mb-8">
-                <TabsList className="mb-4">
+                <TabsList className="mb-4 glass-effect">
                   <TabsTrigger value="all">All</TabsTrigger>
                   <TabsTrigger value="albums">Albums</TabsTrigger>
                   <TabsTrigger value="artists">Artists</TabsTrigger>
@@ -151,10 +155,16 @@ const SearchPage = () => {
                 {categories.map((category) => (
                   <div
                     key={category.id}
-                    className={`${category.color} rounded-lg aspect-square relative overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-transform`}
+                    className={`relative h-44 rounded-lg overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-transform hover:shadow-lg`}
                   >
-                    <div className="absolute inset-0 p-4">
-                      <h3 className="text-white font-bold text-2xl">{category.name}</h3>
+                    <img 
+                      src={category.imageUrl} 
+                      alt={category.name}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className={`absolute inset-0 ${category.color} opacity-60`}></div>
+                    <div className="absolute inset-0 p-4 flex items-end">
+                      <h3 className="text-white font-bold text-2xl drop-shadow-md">{category.name}</h3>
                     </div>
                   </div>
                 ))}
@@ -170,6 +180,6 @@ const SearchPage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default SearchPage;
